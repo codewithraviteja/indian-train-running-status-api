@@ -3,7 +3,9 @@ import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-
+@app.route('/')
+def home():
+    return "Indian Train Running Status API is Live 🚆"
 @app.route('/train')
 def train():
     train_no = request.args.get('trainNo')
@@ -66,3 +68,4 @@ def train():
     })
 
 app.run(port=5000)
+

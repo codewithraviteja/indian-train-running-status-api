@@ -3,9 +3,11 @@ import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+
 @app.route('/')
 def home():
     return "Indian Train Running Status API is Live 🚆"
+
 @app.route('/train')
 def train():
     train_no = request.args.get('trainNo')
@@ -25,24 +27,19 @@ def train():
     current_delay = None
     current_pf = None
 
-    # Find current running row using class
+    # Current running row
     current_row = soup.find("tr", class_="table-success")
 
     if current_row:
         cols = current_row.find_all("td")
 
         if len(cols) >= 4:
-            # Only station name (clean)
             abbr = cols[0].find("abbr")
-            if abbr:
-                current_station = abbr.text.strip()
-            else:
-                current_station = cols[0].text.strip()
-
+            current_station = abbr.text.strip() if abbr else cols[0].text.strip()
             current_delay = cols[1].text.strip()
             current_pf = cols[3].text.strip()
 
-    # Get full route stations
+    # All stations
     rows = soup.find_all("tr")
 
     for row in rows:
@@ -67,5 +64,5 @@ def train():
         "stations": stations
     })
 
-app.run(port=5000)
-
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
